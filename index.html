@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>เลือกไม่ถูก</title>
+<meta name="description" content="ถามทางบ้าน รวมคำตอบ แล้วให้วงล้อช่วยตัดสิน สำหรับคนที่ตัดสินใจยาก">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F1F5F0; --surface:#FFFFFF; --surface-2:#E6EDE6; --ink:#17221E; --muted:#5B6B64; --line:#D3DDD5;
+  --teal:#0B6B5F; --teal-ink:#FFFFFF; --teal-soft:#D6EDE8; --teal-text:#0B5A50;
+  --gold:#E9A91E; --gold-soft:#FCEFC9; --gold-ink:#5A3D00;
+  --danger:#B3261E; --shadow:0 1px 2px rgba(20,40,34,.06),0 6px 20px rgba(20,40,34,.07);
+  --display:"Mitr","Anuphan",system-ui,sans-serif; --body:"Anuphan","Noto Sans Thai",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1513; --surface:#18211D; --surface-2:#212C27; --ink:#E6EEE9; --muted:#93A59C; --line:#2C3A34;
+    --teal:#3DBFA9; --teal-ink:#06201B; --teal-soft:#173A33; --teal-text:#7FD8C7;
+    --gold:#F2BE45; --gold-soft:#3A2F12; --gold-ink:#F8DA8F; --danger:#F2A19B; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1513; --surface:#18211D; --surface-2:#212C27; --ink:#E6EEE9; --muted:#93A59C; --line:#2C3A34;
+  --teal:#3DBFA9; --teal-ink:#06201B; --teal-soft:#173A33; --teal-text:#7FD8C7;
+  --gold:#F2BE45; --gold-soft:#3A2F12; --gold-ink:#F8DA8F; --danger:#F2A19B; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding-inline:16px;padding-block:0 48px}
+.wrap{max-width:720px;margin:0 auto}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.25;margin:0;text-wrap:balance}
+
+/* header */
+.top{display:flex;flex-direction:column;gap:14px;padding-block:28px 18px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:44px;height:44px;flex:none}
+.brand h1{font-size:2rem;font-weight:600;letter-spacing:-.01em}
+.brand p{margin:0;color:var(--muted);font-size:.95rem}
+.search{position:relative}
+.search input{width:100%;padding:14px 16px 14px 46px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-size:1.05rem;box-shadow:var(--shadow)}
+.search input:focus{border-color:var(--teal);outline:none}
+.search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:5px 14px;font-size:.9rem;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.label{font-size:.78rem;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:4px 12px;font-size:.88rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);font-weight:600}
+
+/* list */
+.list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.qcard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;transition:border-color .15s,transform .15s}
+.qcard:hover{border-color:var(--teal)}
+.qcard:active{transform:scale(.99)}
+.qcard .qt{font-family:var(--display);font-size:1.12rem;font-weight:500;display:block}
+.qcard .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:2px}
+.qcard .grow{flex:1;min-width:0}
+.count{flex:none;display:flex;flex-direction:column;align-items:center;min-width:52px;padding:6px 4px;border-radius:10px;background:var(--gold-soft);color:var(--gold-ink);font-variant-numeric:tabular-nums}
+.count b{font-family:var(--display);font-size:1.2rem;font-weight:600;line-height:1.1}
+.count span{font-size:.7rem}
+.empty{padding:22px 18px;border:1.5px dashed var(--line);border-radius:14px;color:var(--muted);text-align:center}
+.newq{margin-top:22px;background:var(--surface);border-radius:16px;padding:18px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.newq h2{font-size:1.2rem}
+.field{display:flex;gap:10px;flex-wrap:wrap}
+.field input[type=text],.field select{flex:1 1 220px;min-width:0;padding:11px 14px;border-radius:11px;border:1.5px solid var(--line);background:var(--bg)}
+.field input:focus,.field select:focus{border-color:var(--teal);outline:none}
+.check{display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--muted)}
+.btn{border:0;border-radius:11px;padding:11px 20px;font-weight:600;background:var(--teal);color:var(--teal-ink);white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.gold{background:var(--gold);color:#2B1D00}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.big{font-family:var(--display);font-size:1.15rem;padding:14px 24px;border-radius:14px}
+.note{font-size:.88rem;color:var(--muted);margin:0}
+.note.err{color:var(--danger)}
+
+/* detail */
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--muted);padding:20px 0 6px;font-size:.95rem}
+.dhead{display:flex;flex-direction:column;gap:10px;padding-block:6px 18px}
+.dhead h2{font-size:1.9rem;font-weight:600}
+.tag{display:inline-block;font-size:.8rem;padding:2px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.randbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--ink);color:var(--bg);border-radius:16px;padding:14px 16px}
+.randbar p{margin:0;flex:1 1 200px;font-size:.95rem;opacity:.85}
+.sec{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.sec h3{font-size:1.1rem;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.dot.sys{background:var(--teal)} .dot.pub{background:var(--gold)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-size:.98rem}
+.opt.sys{background:var(--teal-soft);color:var(--teal-text)}
+.opt.pub{background:var(--gold-soft);color:var(--gold-ink)}
+.opt small{font-size:.75rem;font-weight:600;opacity:.8;font-variant-numeric:tabular-nums}
+.answer{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.answer h3{font-size:1.1rem}
+.feed{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);margin-top:4px}
+.feed div{display:flex;justify-content:space-between;gap:12px;padding:8px 2px;border-bottom:1px solid var(--line);font-size:.93rem}
+.feed .saving{opacity:.6}
+.feed .failed span,.feed .failed time{color:var(--danger)}
+.status{margin:12px 0 0;padding:10px 14px;border-radius:12px;font-size:.92rem;background:var(--surface-2);color:var(--ink)}
+.status[data-kind="warn"]{background:var(--gold-soft);color:var(--gold-ink)}
+.feed time{color:var(--muted);font-size:.8rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* wheel sheet */
+.overlay{position:fixed;inset:0;background:rgba(8,14,12,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.sheet{background:var(--surface);color:var(--ink);width:100%;max-width:520px;max-height:100%;overflow:auto;border-radius:22px;padding:18px 18px 22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+@media (min-width:640px){.overlay{align-items:center}}
+.sheet-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.sheet-head h2{font-size:1.25rem}
+.x{border:0;background:var(--surface-2);border-radius:50%;width:36px;height:36px;flex:none;font-size:1.2rem;line-height:1}
+.wheel-box{position:relative;width:100%;max-width:340px;aspect-ratio:1;margin:0 auto}
+.wheel-box canvas{width:100%;height:100%;display:block}
+.pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:26px solid var(--ink);filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.result{text-align:center;padding:14px;border-radius:14px;background:var(--gold-soft);color:var(--gold-ink)}
+.result .big{font-family:var(--display);font-size:1.7rem;font-weight:600;display:block;line-height:1.3}
+.result-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.toggles{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.sheet .btn.big{width:100%}
+.loading{color:var(--muted);padding:20px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="status" id="status" role="status" hidden></p>
+  <section id="listView">
+    <header class="top">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true">
+          <circle cx="22" cy="22" r="20" fill="#F2BE45"/>
+          <path d="M22 22 L22 2 A20 20 0 0 1 39.3 12 Z" fill="#6CC5B3"/>
+          <path d="M22 22 L39.3 32 A20 20 0 0 1 22 42 Z" fill="#F08A8F"/>
+          <path d="M22 22 L4.7 32 A20 20 0 0 1 4.7 12 Z" fill="#8DB8E8"/>
+          <circle cx="22" cy="22" r="4" fill="#17221E"/>
+        </svg>
+        <div>
+          <h1>เลือกไม่ถูก</h1>
+          <p>ถามทางบ้าน รวมคำตอบ แล้วให้วงล้อช่วยตัดสิน</p>
+        </div>
+      </div>
+      <label class="search" for="q">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="ค้นหาคำถาม เช่น กินอะไรดี" autocomplete="off" aria-label="ค้นหาคำถาม">
+      </label>
+      <div class="chips" id="cats" role="group" aria-label="หมวดหมู่"></div>
+    </header>
+    <div class="row">
+      <span class="label" id="resultLabel">คำถามทั้งหมด</span>
+      <div class="seg" role="group" aria-label="เรียงลำดับ">
+        <button id="sortPop" type="button" aria-pressed="true">ยอดนิยม</button>
+        <button id="sortNew" type="button" aria-pressed="false">ล่าสุด</button>
+      </div>
+    </div>
+    <div class="list" id="list"></div>
+
+    <form class="newq" id="newForm" autocomplete="off">
+      <h2>ไม่เจอคำถามที่อยากถาม? ตั้งเองเลย</h2>
+      <div class="field">
+        <input id="newTitle" type="text" maxlength="80" placeholder="เช่น เที่ยงนี้กินอะไรดี" aria-label="หัวข้อคำถาม" required>
+        <select id="newCat" aria-label="หมวดหมู่"></select>
+      </div>
+      <div class="row">
+        <p class="note" id="newNote">คนอื่นจะเห็นคำถามนี้และช่วยกันตอบได้ทันที</p>
+        <button class="btn" id="newBtn" type="submit">ตั้งคำถาม</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="detailView" hidden>
+    <button class="back" id="backBtn" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      คำถามทั้งหมด
+    </button>
+    <div class="dhead">
+      <span><span class="tag" id="dCat"></span></span>
+      <h2 id="dTitle"></h2>
+      <p class="note" id="dMeta"></p>
+    </div>
+    <div class="randbar">
+      <p id="randHint"></p>
+      <button class="btn gold big" id="openWheel" type="button">โหมดสุ่ม</button>
+    </div>
+    <div class="sec">
+      <h3><span class="dot sys"></span>ระบบแนะนำ</h3>
+      <div class="opts" id="sysOpts"></div>
+    </div>
+    <div class="sec">
+      <h3><span class="dot pub"></span>จากทางบ้าน <span class="note" id="pubCount"></span></h3>
+      <div class="opts" id="pubOpts"></div>
+    </div>
+    <form class="answer" id="ansForm" autocomplete="off">
+      <h3>ตอบคำถามนี้</h3>
+      <div class="field">
+        <input id="ansText" type="text" maxlength="60" placeholder="พิมพ์คำตอบของคุณ" aria-label="คำตอบของคุณ" required>
+        <button class="btn" id="ansBtn" type="submit">ส่งคำตอบ</button>
+      </div>
+      <p class="note" id="ansNote">คำตอบจะถูกนำไปรวมในวงล้อสุ่มด้วย ถ้าหลายคนตอบเหมือนกันจะนับรวมกัน</p>
+      <div class="feed" id="feed"></div>
+    </form>
+  </section>
+</div>
+
+<div class="overlay" id="wheelSheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="wTitle">
+    <div class="sheet-head">
+      <div><span class="label">โหมดสุ่ม</span><h2 id="wTitle"></h2></div>
+      <button class="x" id="closeWheel" type="button" aria-label="ปิด">×</button>
+    </div>
+    <div class="toggles">
+      <label class="check" for="useSys"><input id="useSys" type="checkbox" checked> ระบบแนะนำ</label>
+      <label class="check" for="usePub"><input id="usePub" type="checkbox" checked> จากทางบ้าน</label>
+    </div>
+    <div class="wheel-box"><canvas id="wheel" width="680" height="680" aria-label="วงล้อสุ่มคำตอบ"></canvas><div class="pointer"></div></div>
+    <p class="note" id="wCount" style="text-align:center"></p>
+    <div class="result" id="wResult" hidden aria-live="polite">
+      <span class="label">วงล้อเลือกให้แล้ว</span>
+      <span class="big" id="wPick"></span>
+      <div class="result-actions">
+        <button class="btn ghost" id="dropPick" type="button">ตัดอันนี้ออก แล้วหมุนใหม่</button>
+        <button class="btn ghost" id="resetPicks" type="button" hidden>คืนตัวเลือกทั้งหมด</button>
+      </div>
+    </div>
+    <button class="btn big" id="spinBtn" type="button">หมุนเลย!</button>
+  </div>
+</div>
+
+<script type="module">
+/* ============================================================
+   ตั้งค่า Firebase: วาง firebaseConfig ของคุณแทนค่า null ด้านล่าง
+   (ดูวิธีใน README.md) ถ้ายังเป็น null เว็บจะเปิดในโหมดทดลอง
+   ============================================================ */
+const FIREBASE_CONFIG = null;
+
+const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+const CATS=['อาหาร','ของหวาน/เครื่องดื่ม','เที่ยว','ดูอะไรดี','ของขวัญ','ไลฟ์สไตล์','อื่นๆ'];
+
+/* คำถามตั้งต้นพร้อมคำตอบแนะนำจากระบบ แก้หรือเพิ่มได้ที่นี่ */
+const BUILTIN=[
+  {id:'eat-today',title:'วันนี้กินอะไรดี',category:'อาหาร',suggestions:['ข้าวมันไก่','กะเพราหมูสับไข่ดาว','ส้มตำไก่ย่าง','ก๋วยเตี๋ยวเรือ','ข้าวขาหมู','สุกี้','ชาบู','ผัดไทย']},
+  {id:'dinner-tonight',title:'เย็นนี้กินอะไรดี',category:'อาหาร',suggestions:['หมูกระทะ','ปิ้งย่างเกาหลี','ซูชิ','พิซซ่า','ข้าวต้มปลา','ต้มยำกุ้ง']},
+  {id:'dessert',title:'ของหวานกินอะไรดี',category:'ของหวาน/เครื่องดื่ม',suggestions:['บิงซู','ข้าวเหนียวมะม่วง','บัวลอย','ไอศกรีม','ขนมปังปิ้ง','เค้กช็อกโกแลต']},
+  {id:'cafe-drink',title:'ร้านกาแฟสั่งอะไรดี',category:'ของหวาน/เครื่องดื่ม',suggestions:['อเมริกาโน่เย็น','ลาเต้','ชาไทย','มัทฉะลาเต้','โกโก้เย็น','น้ำผึ้งมะนาวโซดา']},
+  {id:'weekend-trip',title:'วันหยุดนี้ไปเที่ยวไหนดี',category:'เที่ยว',suggestions:['เขาใหญ่','หัวหิน','กาญจนบุรี','อยุธยา','บางแสน','เกาะเกร็ด']},
+  {id:'movie-tonight',title:'คืนนี้ดูหนังแนวไหนดี',category:'ดูอะไรดี',suggestions:['ตลก','สยองขวัญ','แอ็กชัน','โรแมนติก','แอนิเมชัน','สารคดี']},
+  {id:'birthday-gift',title:'ของขวัญวันเกิดเพื่อนให้อะไรดี',category:'ของขวัญ',suggestions:['เทียนหอม','แก้วน้ำเก็บความเย็น','หนังสือ','บัตรกำนัลร้านกาแฟ','ต้นไม้เล็กๆ','พาไปเลี้ยงข้าว']},
+  {id:'workout',title:'วันนี้ออกกำลังกายแบบไหนดี',category:'ไลฟ์สไตล์',suggestions:['วิ่ง 5 กม.','โยคะ','ว่ายน้ำ','ปั่นจักรยาน','เวทเทรนนิ่ง','เดินเร็ว 30 นาที']},
+  {id:'cat-name',title:'ตั้งชื่อแมวว่าอะไรดี',category:'อื่นๆ',suggestions:['ส้มโอ','ขนมปัง','มะขาม','โมจิ','ถั่วแดง','เผือก']},
+  {id:'outfit-color',title:'ไปเที่ยวใส่เสื้อสีอะไรดี',category:'ไลฟ์สไตล์',suggestions:['ขาว','ดำ','ครีม','น้ำเงิน','เขียวมะกอก','ชมพูพาสเทล']},
+].map((q,i)=>({...q,createdAt:new Date(Date.UTC(2026,8,27,1,i)).toISOString(),builtin:true}));
+
+const SLICE=['#F2BE45','#6CC5B3','#F08A8F','#8DB8E8','#B6D67A','#C9A3D9','#F6A866','#7FCBD9'];
+const S={userQuestions:[],answers:[],search:'',cat:'ทั้งหมด',sort:'pop',view:null,store:null,loaded:false,
+  excluded:new Set(),rot:0,spinning:false,lastPick:null,cooldown:0};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
+const clean=s=>String(s||'').trim().replace(/\s+/g,' ');
+const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej({code:'timeout'}),ms))]);
+function setStatus(kind,text){const el=$('status');el.dataset.kind=kind||'';el.textContent=text||'';el.hidden=!text}
+
+/* ---------- data stores ---------- */
+function toIso(v){if(!v)return new Date().toISOString();if(typeof v==='string')return v;if(v.toDate)return v.toDate().toISOString();return new Date().toISOString()}
+
+async function firebaseStore(cfg){
+  const [{initializeApp},fs]=await Promise.all([import(SDK+'firebase-app.js'),import(SDK+'firebase-firestore.js')]);
+  const app=initializeApp(cfg);const db=fs.getFirestore(app);
+  const rows=snap=>snap.docs.map(d=>{const x=d.data({serverTimestamps:'estimate'});return {id:d.id,...x,createdAt:toIso(x.createdAt)}});
+  return {
+    live:true,
+    watchQuestions(cb,err){return fs.onSnapshot(fs.query(fs.collection(db,'questions'),fs.orderBy('createdAt','desc'),fs.limit(500)),s=>cb(rows(s)),err)},
+    watchAnswers(cb,err){return fs.onSnapshot(fs.query(fs.collection(db,'answers'),fs.orderBy('createdAt','desc'),fs.limit(2000)),s=>cb(rows(s)),err)},
+    async addAnswer(qid,text){await fs.addDoc(fs.collection(db,'answers'),{qid,text,createdAt:fs.serverTimestamp()})},
+    async addQuestion(title,category){const r=await fs.addDoc(fs.collection(db,'questions'),{title,category,createdAt:fs.serverTimestamp()});return r.id},
+  };
+}
+function demoStore(){
+  const qs=[],as=[],qL=new Set(),aL=new Set();
+  const emit=()=>{qL.forEach(f=>f(qs.slice()));aL.forEach(f=>f(as.slice()))};
+  let n=0;
+  return {
+    live:false,
+    watchQuestions(cb){qL.add(cb);cb(qs.slice())},
+    watchAnswers(cb){aL.add(cb);cb(as.slice())},
+    async addAnswer(qid,text){as.unshift({id:'d'+(++n),qid,text,createdAt:new Date().toISOString()});emit()},
+    async addQuestion(title,category){const id='dq'+(++n);qs.unshift({id,title,category,createdAt:new Date().toISOString()});emit();return id},
+  };
+}
+
+/* ---------- derived data ---------- */
+function allQuestions(){return BUILTIN.concat(S.userQuestions.filter(q=>!BUILTIN.some(b=>b.id===q.id)))}
+function answersFor(qid){return S.answers.filter(a=>a.qid===qid)}
+function countMap(){const m={};for(const a of S.answers){m[a.qid]=(m[a.qid]||0)+1}return m}
+function optionsFor(q){
+  const map=new Map();
+  for(const s of (q.suggestions||[])){const k=norm(s);if(!k||map.has(k))continue;map.set(k,{text:clean(s),sys:true,pub:0})}
+  for(const a of answersFor(q.id)){const k=norm(a.text);if(!k)continue;
+    if(map.has(k)){map.get(k).pub++}else{map.set(k,{text:clean(a.text),sys:false,pub:1})}}
+  return [...map.values()];
+}
+function relTime(iso){
+  const t=Date.parse(iso);if(!t)return '';const d=(Date.now()-t)/1000;
+  if(d<60)return 'เมื่อสักครู่';if(d<3600)return Math.floor(d/60)+' นาทีที่แล้ว';
+  if(d<86400)return Math.floor(d/3600)+' ชม.ที่แล้ว';return Math.floor(d/86400)+' วันที่แล้ว';
+}
+
+/* ---------- list view ---------- */
+function renderCats(){
+  $('cats').innerHTML=['ทั้งหมด',...CATS].map(c=>`<button class="chip" type="button" data-cat="${esc(c)}" aria-pressed="${c===S.cat}">${esc(c)}</button>`).join('');
+}
+$('cats').addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;S.cat=b.dataset.cat;renderCats();renderList()});
+$('newCat').innerHTML=CATS.map(c=>`<option>${esc(c)}</option>`).join('');
+$('q').addEventListener('input',e=>{S.search=e.target.value;renderList()});
+$('sortPop').onclick=()=>{S.sort='pop';$('sortPop').setAttribute('aria-pressed','true');$('sortNew').setAttribute('aria-pressed','false');renderList()};
+$('sortNew').onclick=()=>{S.sort='new';$('sortNew').setAttribute('aria-pressed','true');$('sortPop').setAttribute('aria-pressed','false');renderList()};
+
+function renderList(){
+  const el=$('list');const cm=countMap();const qn=norm(S.search);
+  let qs=allQuestions().filter(q=>(S.cat==='ทั้งหมด'||q.category===S.cat));
+  if(qn)qs=qs.filter(q=>norm(q.title).includes(qn)||(q.suggestions||[]).some(s=>norm(s).includes(qn))||answersFor(q.id).some(a=>norm(a.text).includes(qn)));
+  qs.sort(S.sort==='pop'?(a,b)=>(cm[b.id]||0)-(cm[a.id]||0)||String(b.createdAt).localeCompare(String(a.createdAt))
+                        :(a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  $('resultLabel').textContent=qn?`ผลการค้นหา ${qs.length} คำถาม`:(S.cat==='ทั้งหมด'?`คำถามทั้งหมด ${qs.length}`:`${S.cat} ${qs.length}`);
+  if(!qs.length){
+    el.innerHTML=`<div class="empty">${qn?`ยังไม่มีคำถาม “${esc(S.search)}”<br>ตั้งเป็นคำถามใหม่ได้ด้านล่างเลย`:'ยังไม่มีคำถามในหมวดนี้'}</div>`;
+    if(qn)$('newTitle').value=S.search.trim();
+    return;
+  }
+  el.innerHTML=qs.map(q=>{
+    const n=cm[q.id]||0,sys=(q.suggestions||[]).length;
+    return `<button class="qcard" type="button" data-q="${esc(q.id)}">
+      <span class="grow"><span class="qt">${esc(q.title)}</span>
+      <span class="meta"><span>${esc(q.category||'อื่นๆ')}</span><span>${sys?`ระบบแนะนำ ${sys} ตัวเลือก`:'คำถามจากทางบ้าน'}</span></span></span>
+      <span class="count"><b>${n}</b><span>คำตอบ</span></span></button>`}).join('');
+}
+$('list').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(b)openQ(b.dataset.q)});
+
+/* ---------- navigation (#question-id links can be shared) ---------- */
+function openQ(id){S.view=id;S.excluded=new Set();S.lastPick=null;if(location.hash.slice(1)!==id)location.hash=id;render();window.scrollTo(0,0)}
+function closeQ(){S.view=null;history.pushState(null,'',location.pathname+location.search);render()}
+$('backBtn').onclick=closeQ;
+window.addEventListener('hashchange',()=>{const h=decodeURIComponent(location.hash.slice(1));S.view=h||null;render()});
+window.addEventListener('popstate',()=>{const h=decodeURIComponent(location.hash.slice(1));S.view=h||null;render()});
+
+/* ---------- detail view ---------- */
+function curQ(){return allQuestions().find(q=>q.id===S.view)}
+function renderDetail(){
+  const q=curQ();
+  if(!q){$('dTitle').textContent=S.loaded?'ไม่พบคำถามนี้':'กำลังโหลด…';$('dCat').textContent='';$('dMeta').textContent='';
+    ['sysOpts','pubOpts','feed'].forEach(i=>$(i).innerHTML='');$('ansForm').hidden=true;return}
+  $('ansForm').hidden=false;
+  $('dTitle').textContent=q.title;$('dCat').textContent=q.category||'อื่นๆ';
+  const ans=answersFor(q.id).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  $('dMeta').textContent=`${ans.length} คำตอบจากทางบ้าน`+(q.builtin?'':` · ตั้งคำถาม ${relTime(q.createdAt)}`);
+  const opts=optionsFor(q),sys=opts.filter(o=>o.sys);
+  $('sysOpts').innerHTML=sys.length?sys.map(o=>`<span class="opt sys">${esc(o.text)}${o.pub?`<small>+${o.pub}</small>`:''}</span>`).join(''):`<p class="note">คำถามนี้ตั้งโดยทางบ้าน คำตอบทั้งหมดมาจากคนที่มาช่วยตอบ</p>`;
+  const pubOnly=opts.filter(o=>o.pub>0).sort((a,b)=>b.pub-a.pub);
+  $('pubCount').textContent=ans.length?`(${ans.length})`:'';
+  $('pubOpts').innerHTML=pubOnly.length?pubOnly.map(o=>`<span class="opt pub">${esc(o.text)}${o.pub>1?`<small>×${o.pub}</small>`:''}</span>`).join(''):`<p class="note">ยังไม่มีใครตอบ มาเป็นคนแรกเลย</p>`;
+  $('feed').innerHTML=ans.slice(0,30).map(a=>`<div><span>${esc(a.text)}</span><time>${esc(relTime(a.createdAt))}</time></div>`).join('');
+  $('openWheel').disabled=opts.length<2;
+  $('randHint').textContent=opts.length<2?'ต้องมีอย่างน้อย 2 ตัวเลือกถึงจะสุ่มได้':`ยังตัดสินใจไม่ได้? เอา ${opts.length} ตัวเลือกใส่วงล้อแล้วหมุนเลย`;
+  if(!$('wheelSheet').hidden&&!S.spinning)drawWheel();
+}
+function render(){
+  const d=!!S.view;$('listView').hidden=d;$('detailView').hidden=!d;
+  if(d)renderDetail();else renderList();
+}
+
+/* ---------- writes ---------- */
+function errText(err){
+  const c=(err&&err.code)||'unknown';
+  if(c==='permission-denied')return 'ระบบไม่รับข้อความนี้ ตรวจว่าไม่ยาวเกินกำหนดแล้วลองใหม่';
+  if(c==='timeout'||c==='unavailable')return 'บันทึกไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วกดส่งอีกครั้ง';
+  if(c==='resource-exhausted')return 'ตอนนี้มีคนใช้งานเยอะ รอสักครู่แล้วลองใหม่';
+  return 'ส่งไม่สำเร็จ กดส่งอีกครั้ง ('+c+')';
+}
+$('ansForm').addEventListener('submit',async e=>{
+  e.preventDefault();const q=curQ(),note=$('ansNote');
+  if(!q||!S.store){note.className='note err';note.textContent='กำลังเชื่อมต่อ รอสักครู่แล้วกดส่งอีกครั้ง';return}
+  const text=clean($('ansText').value);
+  if(!text){note.className='note err';note.textContent='พิมพ์คำตอบก่อนนะ';return}
+  if(Date.now()<S.cooldown){note.className='note err';note.textContent='ส่งถี่ไปหน่อย รอสักครู่แล้วลองใหม่';return}
+  S.cooldown=Date.now()+3000;$('ansBtn').disabled=true;note.className='note';note.textContent='กำลังส่ง…';
+  try{await withTimeout(S.store.addAnswer(q.id,text),20000);$('ansText').value='';note.textContent=`ส่งคำตอบ “${text}” แล้ว ขอบคุณที่ช่วยตัดสินใจ!`}
+  catch(err){note.className='note err';note.textContent=errText(err)}
+  finally{$('ansBtn').disabled=false}
+});
+$('newForm').addEventListener('submit',async e=>{
+  e.preventDefault();const note=$('newNote');
+  const title=clean($('newTitle').value);
+  if(!title){note.className='note err';note.textContent='พิมพ์หัวข้อคำถามก่อนนะ';return}
+  const dup=allQuestions().find(q=>norm(q.title)===norm(title));
+  if(dup){openQ(dup.id);return}
+  if(!S.store){note.className='note err';note.textContent='กำลังเชื่อมต่อ รอสักครู่แล้วลองใหม่';return}
+  $('newBtn').disabled=true;note.className='note';note.textContent='กำลังตั้งคำถาม…';
+  try{
+    const id=await withTimeout(S.store.addQuestion(title,$('newCat').value),20000);
+    $('newTitle').value='';$('q').value='';S.search='';note.textContent='คนอื่นจะเห็นคำถามนี้และช่วยกันตอบได้ทันที';
+    openQ(id);
+  }catch(err){note.className='note err';note.textContent=errText(err)}
+  finally{$('newBtn').disabled=false}
+});
+
+/* ---------- wheel ---------- */
+function wheelOptions(){
+  const q=curQ();if(!q)return[];
+  const useSys=$('useSys').checked,usePub=$('usePub').checked;
+  return optionsFor(q).filter(o=>((o.sys&&useSys)||(o.pub>0&&usePub))&&!S.excluded.has(norm(o.text)));
+}
+function drawWheel(){
+  const cv=$('wheel'),ctx=cv.getContext('2d'),W=cv.width,R=W/2-8,c=W/2;
+  const opts=wheelOptions(),n=opts.length;
+  ctx.clearRect(0,0,W,W);
+  $('wCount').textContent=n?`${n} ตัวเลือกในวงล้อ${S.excluded.size?` · ตัดออกไปแล้ว ${S.excluded.size}`:''}`:'ไม่มีตัวเลือกในวงล้อ ลองติ๊กแหล่งคำตอบด้านบน';
+  $('spinBtn').disabled=n<1||S.spinning;
+  $('resetPicks').hidden=!S.excluded.size;
+  if(!n){ctx.beginPath();ctx.arc(c,c,R,0,Math.PI*2);ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--surface-2');ctx.fill();return}
+  const a=Math.PI*2/n;
+  for(let i=0;i<n;i++){
+    const s=S.rot+i*a-Math.PI/2;
+    ctx.beginPath();ctx.moveTo(c,c);ctx.arc(c,c,R,s,s+a);ctx.closePath();
+    ctx.fillStyle=SLICE[(n>1&&i===n-1&&i%SLICE.length===0)?1:i%SLICE.length];ctx.fill();
+    ctx.lineWidth=3;ctx.strokeStyle='#FFFFFF';ctx.stroke();
+    ctx.save();ctx.translate(c,c);ctx.rotate(s+a/2);
+    const fs=n>16?20:n>10?24:n>6?28:32;
+    ctx.font=`500 ${fs}px Mitr, Anuphan, sans-serif`;ctx.fillStyle='#1B1F1D';ctx.textAlign='right';ctx.textBaseline='middle';
+    let t=opts[i].text;const maxW=R-70;
+    while(ctx.measureText(t).width>maxW&&t.length>2)t=t.slice(0,-1);
+    if(t!==opts[i].text)t=t.slice(0,-1)+'…';
+    ctx.fillText(t,R-22,0);ctx.restore();
+  }
+  ctx.beginPath();ctx.arc(c,c,34,0,Math.PI*2);ctx.fillStyle='#17221E';ctx.fill();
+  ctx.lineWidth=5;ctx.strokeStyle='#FFFFFF';ctx.stroke();
+}
+function openWheel(){const q=curQ();if(!q)return;$('wTitle').textContent=q.title;$('wResult').hidden=true;$('wheelSheet').hidden=false;drawWheel();$('spinBtn').focus()}
+function closeWheel(){if(S.spinning)return;$('wheelSheet').hidden=true;$('openWheel').focus()}
+$('openWheel').onclick=openWheel;$('closeWheel').onclick=closeWheel;
+$('wheelSheet').addEventListener('click',e=>{if(e.target===e.currentTarget)closeWheel()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('wheelSheet').hidden)closeWheel()});
+$('useSys').onchange=$('usePub').onchange=()=>{$('wResult').hidden=true;drawWheel()};
+$('dropPick').onclick=()=>{if(S.lastPick){S.excluded.add(norm(S.lastPick));S.lastPick=null}$('wResult').hidden=true;drawWheel();if(wheelOptions().length>1)spin()};
+$('resetPicks').onclick=()=>{S.excluded.clear();$('wResult').hidden=true;drawWheel()};
+$('spinBtn').onclick=spin;
+function spin(){
+  const opts=wheelOptions(),n=opts.length;if(!n||S.spinning)return;
+  const i=Math.floor(Math.random()*n),a=Math.PI*2/n,TAU=Math.PI*2;
+  const target=-(i+.5)*a+(Math.random()-.5)*a*.7;
+  const cur=S.rot,end=cur+TAU*6+(((target-cur)%TAU)+TAU)%TAU;
+  S.spinning=true;$('wResult').hidden=true;$('spinBtn').disabled=true;$('spinBtn').textContent='กำลังหมุน…';
+  const done=()=>{S.rot=end%TAU;S.spinning=false;S.lastPick=opts[i].text;drawWheel();
+    $('wPick').textContent=opts[i].text;$('dropPick').hidden=n<2;$('wResult').hidden=false;$('spinBtn').textContent='หมุนอีกรอบ'};
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){done();return}
+  const t0=performance.now(),dur=4200;
+  (function frame(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,4);S.rot=cur+(end-cur)*e;drawWheel();if(p<1)requestAnimationFrame(frame);else done()})(t0);
+}
+
+/* ---------- boot ---------- */
+renderCats();
+S.view=decodeURIComponent(location.hash.slice(1))||null;
+render();
+(async()=>{
+  let store;
+  if(FIREBASE_CONFIG){
+    try{store=await firebaseStore(FIREBASE_CONFIG)}
+    catch(err){setStatus('warn','เชื่อมต่อฐานข้อมูลไม่สำเร็จ รีเฟรชหน้าอีกครั้ง');console.error(err);return}
+  }else{
+    store=demoStore();
+    setStatus('warn','โหมดทดลอง: ยังไม่ได้ใส่ค่า Firebase คำตอบจะหายเมื่อปิดหน้า และคนอื่นมองไม่เห็น');
+  }
+  S.store=store;
+  let gotQ=false,gotA=false;const done=()=>{S.loaded=gotQ&&gotA;render()};
+  const fail=what=>err=>{console.error(err);setStatus('warn',`โหลด${what}ไม่สำเร็จ ตรวจการตั้งค่า Firestore แล้วรีเฟรช (${(err&&err.code)||'error'})`)};
+  store.watchQuestions(rows=>{S.userQuestions=rows;gotQ=true;done()},fail('คำถาม'));
+  store.watchAnswers(rows=>{S.answers=rows;gotA=true;done()},fail('คำตอบ'));
+})();
+</script>
+</body>
+</html>
